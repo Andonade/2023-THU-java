@@ -1,0 +1,298 @@
+package com.mide.news;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.util.Log;
+
+import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.List;
+
+import com.alibaba.fastjson2.*;
+
+import okhttp3.*;
+
+import com.mide.news.model.News;
+import com.mide.news.model.MsgType;
+
+import com.bumptech.glide.Glide;
+import com.scwang.smart.refresh.footer.BallPulseFooter;
+import com.scwang.smart.refresh.header.BezierRadarHeader;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.constant.SpinnerStyle;
+import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
+import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
+
+public class MainActivity extends AppCompatActivity {
+
+    private RefreshLayout refreshLayout;
+
+    private BezierRadarHeader header;
+
+    private BallPulseFooter footer;
+
+    private RecyclerView recyclerView;
+
+    private MyHandler handler = new MyHandler(this);
+
+    private newsAdapter adapter;
+
+    private int currentPage;
+
+    private int totalPage;
+
+    List<News> newsList = new ArrayList<News>();
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        refreshLayout = findViewById(R.id.refreshLayout);
+        header = (BezierRadarHeader) findViewById(R.id.header);
+        footer = (BallPulseFooter) findViewById(R.id.footer);
+        footer.setSpinnerStyle(SpinnerStyle.FixedBehind);
+        refreshLayout.setRefreshHeader(header);
+        refreshLayout.setRefreshFooter(footer);
+
+        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(RefreshLayout refreshlayout) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (getDefaultNews()) {
+                            Message message = Message.obtain();
+                            message.what = MsgType.REFRESH_SUCCESS.ordinal();
+                            handler.sendMessage(message);
+                        } else {
+                            Message message = Message.obtain();
+                            message.what = MsgType.REFRESH_FAILURE.ordinal();
+                            handler.sendMessage(message);
+                        }
+                    }
+                }).start();
+                refreshlayout.finishRefresh(1500);
+            }
+        });
+
+        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(RefreshLayout refreshlayout) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (getMoreNews()) {
+                            Message message = Message.obtain();
+                            message.what = MsgType.LOAD_SUCCESS.ordinal();
+                            handler.sendMessage(message);
+                        } else {
+                            Message message = Message.obtain();
+                            message.what = MsgType.LOAD_FAILURE.ordinal();
+                            handler.sendMessage(message);
+                        }
+                    }
+                }).start();
+            }
+        });
+        recyclerView = findViewById(R.id.recyclerView);
+        adapter = new newsAdapter();
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (getDefaultNews()) {
+                    Message message = new Message();
+                    message.what = MsgType.LOAD_SUCCESS.ordinal();
+                    handler.sendMessage(message);
+                } else {
+                    Message message = new Message();
+                    message.what = MsgType.INIT_FAILURE.ordinal();
+                    handler.sendMessage(message);
+                }
+            }
+        }).start();
+    }
+
+    private String getNowDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(new Date());
+    }
+
+    private URL getUrl(String size, String startDate, String endDate, String words, String categories, String page) {
+        StringBuffer Url = new StringBuffer("https://api2.newsminer.net/svc/news/queryNewsList?");
+        Url.append("size=" + size);
+        Url.append("&startDate=" + startDate);
+        Url.append("&endDate=" + endDate);
+        Url.append("&words=" + words);
+        Url.append("&categories=" + categories);
+        Url.append("&page=" + page);
+        URL url = null;
+        try {
+            url = new URL(Url.toString());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return url;
+    }
+
+    private boolean getDefaultNews() {
+        URL url = getUrl("", "", getNowDate(), "", "", "1");
+        final OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder().url(url).build();
+        try (Response response = client.newCall(request).execute()) {
+            newsList.clear();
+            JSONObject news = JSON.parseObject(response.body().string());
+            currentPage = news.getInteger("currentPage");
+            totalPage = news.getInteger("pageSize");
+            JSONArray newsArray = news.getJSONArray("data");
+            for (int i = 0; i < newsArray.size(); i++) {
+                JSONObject newsObject = newsArray.getJSONObject(i);
+                News newsItem = new News(newsObject.getString("title"), new ArrayList<String>(), newsObject.getString("publishTime"), newsObject.getString("publisher"), newsObject.getString("category"));
+                String image = newsObject.getString("image");
+                if (image.charAt(1) == ',' || image.charAt(1) == ']') {
+                    continue;
+                } else {
+                    newsItem.addPicUrl(image.substring(1, image.length() - 1));
+                }
+                newsList.add(newsItem);
+            }
+            return true;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private boolean getMoreNews() {
+        if (currentPage < totalPage) {
+            currentPage++;
+            URL url = getUrl("", "", getNowDate(), "", "", String.valueOf(currentPage));
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder().url(url).build();
+            Call call = client.newCall(request);
+            try (Response response = call.execute()) {
+                JSONObject news = JSON.parseObject(response.body().string());
+                currentPage = news.getInteger("currentPage");
+                totalPage = news.getInteger("pageSize");
+                JSONArray newsArray = news.getJSONArray("data");
+                for (int i = 0; i < newsArray.size(); i++) {
+                    JSONObject newsObject = newsArray.getJSONObject(i);
+                    News newsItem = new News(newsObject.getString("title"), new ArrayList<String>(), newsObject.getString("publishTime"), newsObject.getString("publisher"), newsObject.getString("category"));
+                    String image = newsObject.getString("image");
+                    if (image.charAt(1) == ',' || image.charAt(1) == ']') {
+                        continue;
+                    } else {
+                        newsItem.addPicUrl(image.substring(1, image.length() - 2));
+                    }
+                    newsList.add(newsItem);
+                }
+                return true;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return false;
+    }
+
+    public class newsAdapter extends RecyclerView.Adapter<MyViewHolder> {
+
+        @NonNull
+        @Override
+        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.news_item, parent, false);
+            MyViewHolder holder = new MyViewHolder(view);
+            return holder;
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull MyViewHolder holder, int pos) {
+            News news = newsList.get(pos);
+
+            if (news.getPicUrls().size() == 0) {
+                holder.newsImage.setVisibility(View.GONE);
+            } else{
+                holder.newsImage.setVisibility(View.VISIBLE);
+                Glide.with(MainActivity.this).load(news.getPicUrls().get(0)).into(holder.newsImage);
+                holder.newsDate.setText(news.getDate());
+                holder.newsPublisher.setText(news.getPublisher());
+                holder.newsTitle.setText(news.getTitle());
+            }
+        }
+
+        public int getItemCount() {
+            return newsList.size();
+        }
+    }
+
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+
+        ImageView newsImage;
+        TextView newsTitle;
+        TextView newsDate;
+        TextView newsPublisher;
+        CardView cardView;
+        public MyViewHolder(@NonNull View itemView) {
+            super(itemView);
+            newsImage = (ImageView) itemView.findViewById(R.id.newsImage);
+            newsTitle = (TextView) itemView.findViewById(R.id.newsTitle);
+            newsDate = (TextView) itemView.findViewById(R.id.newsDate);
+            newsPublisher = (TextView) itemView.findViewById(R.id.newsPublisher);
+            cardView = (CardView) itemView.findViewById(R.id.rootItem);
+        }
+    }
+
+    private static class MyHandler extends Handler {
+        private WeakReference<MainActivity> weakReference;
+
+        public MyHandler(MainActivity mainActivity) {
+            weakReference = new WeakReference(mainActivity);
+        }
+
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            MainActivity mainActivity = weakReference.get();
+            super.handleMessage(msg);
+            if (mainActivity != null) {
+                switch (msg.what) {
+                    case 0:
+                        mainActivity.adapter.notifyDataSetChanged();
+                        break;
+                    case 1:
+                        mainActivity.adapter.notifyDataSetChanged();
+                        mainActivity.refreshLayout.finishLoadMore(1500);
+                        break;
+                    case 2:
+                        mainActivity.refreshLayout.finishLoadMoreWithNoMoreData();
+                        break;
+                    case 3:
+                        mainActivity.refreshLayout.finishRefresh(false);
+                        break;
+                    case 4:
+                        Toast.makeText(mainActivity, "网络错误", Toast.LENGTH_SHORT).show();
+                        break;
+                    default:
+                        Toast.makeText(mainActivity, "未知错误", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        }
+    }
+}
