@@ -1,6 +1,7 @@
 package com.mide.news;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -12,6 +13,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -130,6 +133,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }).start();
+
+        actionBarConfiguration();
     }
 
     private String getNowDate() {
@@ -221,6 +226,28 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return false;
+    }
+
+    private void actionBarConfiguration() {
+        ActionBar actionBar = this.getSupportActionBar();
+        actionBar.setTitle("News");
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_filter) {
+            //TODO: filter
+            Toast.makeText(this, "filter", Toast.LENGTH_SHORT).show();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
     }
 
     public class newsAdapter extends RecyclerView.Adapter<MyViewHolder> {
