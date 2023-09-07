@@ -6,16 +6,17 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.util.Log;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -89,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 }).start();
-                refreshlayout.finishRefresh(1500);
             }
         });
 
@@ -166,13 +166,20 @@ public class MainActivity extends AppCompatActivity {
             JSONArray newsArray = news.getJSONArray("data");
             for (int i = 0; i < newsArray.size(); i++) {
                 JSONObject newsObject = newsArray.getJSONObject(i);
-                News newsItem = new News(newsObject.getString("title"), new ArrayList<String>(), newsObject.getString("publishTime"), newsObject.getString("publisher"), newsObject.getString("category"));
-                String image = newsObject.getString("image");
-                if (image.charAt(1) == ',' || image.charAt(1) == ']') {
-                    continue;
-                } else {
-                    newsItem.addPicUrl(image.substring(1, image.length() - 1));
+                News newsItem = new News(newsObject.getString("title"), new ArrayList<String>(), newsObject.getString("publishTime"), newsObject.getString("publisher"), newsObject.getString("category"), newsObject.getString("content"), newsObject.getString("videoUrl"), newsObject.getString("newsID"));
+                String images = newsObject.getString("image");
+                String[] pics = images.split(",");
+                String image = pics[0];
+                if (image.length() > 2) {
+                    if (image.charAt(image.length() - 1) == ']') {
+                        newsItem.addPicUrl(image.substring(1, image.length() - 1));
+                    } else {
+                        newsItem.addPicUrl(image.substring(1));
+                    }
                 }
+                Log.i("title", newsItem.getTitle());
+                Log.i("date", newsItem.getDate());
+                Log.i("publisher", newsItem.getPublisher());
                 newsList.add(newsItem);
             }
             return true;
@@ -195,12 +202,16 @@ public class MainActivity extends AppCompatActivity {
                 JSONArray newsArray = news.getJSONArray("data");
                 for (int i = 0; i < newsArray.size(); i++) {
                     JSONObject newsObject = newsArray.getJSONObject(i);
-                    News newsItem = new News(newsObject.getString("title"), new ArrayList<String>(), newsObject.getString("publishTime"), newsObject.getString("publisher"), newsObject.getString("category"));
-                    String image = newsObject.getString("image");
-                    if (image.charAt(1) == ',' || image.charAt(1) == ']') {
-                        continue;
-                    } else {
-                        newsItem.addPicUrl(image.substring(1, image.length() - 2));
+                    News newsItem = new News(newsObject.getString("title"), new ArrayList<String>(), newsObject.getString("publishTime"), newsObject.getString("publisher"), newsObject.getString("category"), newsObject.getString("content"), newsObject.getString("videoUrl"), newsObject.getString("newsID"));
+                    String images = newsObject.getString("image");
+                    String[] pics = images.split(",");
+                    String image = pics[0];
+                    if (image.length() > 2) {
+                        if (image.charAt(image.length() - 1) == ']') {
+                            newsItem.addPicUrl(image.substring(1, image.length() - 1));
+                        } else {
+                            newsItem.addPicUrl(image.substring(1));
+                        }
                     }
                     newsList.add(newsItem);
                 }
@@ -231,10 +242,23 @@ public class MainActivity extends AppCompatActivity {
             } else{
                 holder.newsImage.setVisibility(View.VISIBLE);
                 Glide.with(MainActivity.this).load(news.getPicUrls().get(0)).into(holder.newsImage);
-                holder.newsDate.setText(news.getDate());
-                holder.newsPublisher.setText(news.getPublisher());
-                holder.newsTitle.setText(news.getTitle());
             }
+            holder.newsDate.setText(news.getDate());
+            holder.newsPublisher.setText(news.getPublisher());
+            holder.newsTitle.setText(news.getTitle());
+            holder.cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+                    intent.putExtra("title", news.getTitle());
+                    intent.putExtra("date", news.getDate());
+                    intent.putExtra("publisher", news.getPublisher());
+                    intent.putExtra("image", news.getPicUrls().isEmpty() ? "" : news.getPicUrls().get(0));
+                    intent.putExtra("content", news.getContent());
+                    intent.putExtra("video", news.getVideoUrl());
+                    startActivity(intent);
+                }
+            });
         }
 
         public int getItemCount() {
@@ -274,10 +298,11 @@ public class MainActivity extends AppCompatActivity {
                 switch (msg.what) {
                     case 0:
                         mainActivity.adapter.notifyDataSetChanged();
+                        mainActivity.refreshLayout.finishRefresh(2000);
                         break;
                     case 1:
                         mainActivity.adapter.notifyDataSetChanged();
-                        mainActivity.refreshLayout.finishLoadMore(1500);
+                        mainActivity.refreshLayout.finishLoadMore(2000);
                         break;
                     case 2:
                         mainActivity.refreshLayout.finishLoadMoreWithNoMoreData();
