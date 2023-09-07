@@ -5,3 +5,7 @@
 <a href="https://www.flaticon.com/free-icons/news" title="news icons">News icons created by dickpra - Flaticon</a>
 
 <a target="_blank" href="https://icons8.com/icon/14192/filter">Filter</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+
+<a target="_blank" href="https://icons8.com/icon/104/star">Outlined star</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+
+<a target="_blank" href="https://icons8.com/icon/7856/star">Filled star</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>

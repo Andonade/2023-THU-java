@@ -79,6 +79,9 @@ public class DetailActivity extends AppCompatActivity {
         if (item.getItemId() == android.R.id.home) {
             finish();
             return true;
+        } else if (item.getItemId() == R.id.action_star) {
+            //TODO: star
+            return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
