@@ -35,7 +35,7 @@
         android:layout_height="48dp"
         android:layout_margin="20dp"
         android:layout_marginTop="100dp"
-        android:hint="开始日期"
+        android:hint="开始日期(yyyy-MM-dd)"
         android:inputType="date"
         app:layout_constraintTop_toBottomOf="@+id/spinner_category"/>
 
@@ -45,7 +45,7 @@
         android:layout_height="48dp"
         android:layout_margin="20dp"
         android:layout_marginTop="100dp"
-        android:hint="结束日期"
+        android:hint="结束日期(yyyy-MM-dd)"
         android:inputType="date"
         app:layout_constraintTop_toBottomOf="@+id/et_start_date"/>
 

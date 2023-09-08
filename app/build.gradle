@@ -45,4 +45,5 @@ dependencies {
     implementation  'io.github.scwang90:refresh-footer-ball:2.0.6'
     implementation  'io.github.scwang90:refresh-header-radar:2.0.6'
     implementation "androidx.constraintlayout:constraintlayout:2.2.0-alpha07"
+    implementation 'cn.jzvd:jiaozivideoplayer:7.7.0'
 }

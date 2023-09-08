@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
             JSONArray newsArray = news.getJSONArray("data");
             for (int i = 0; i < newsArray.size(); i++) {
                 JSONObject newsObject = newsArray.getJSONObject(i);
-                News newsItem = new News(newsObject.getString("title"), new ArrayList<String>(), newsObject.getString("publishTime"), newsObject.getString("publisher"), newsObject.getString("category"), newsObject.getString("content"), newsObject.getString("videoUrl"), newsObject.getString("newsID"));
+                News newsItem = new News(newsObject.getString("title"), new ArrayList<String>(), newsObject.getString("publishTime"), newsObject.getString("publisher"), newsObject.getString("category"), newsObject.getString("content"), newsObject.getString("video"), newsObject.getString("newsID"));
                 String images = newsObject.getString("image");
                 String[] pics = images.split(",");
                 String image = pics[0];
@@ -222,9 +222,6 @@ public class MainActivity extends AppCompatActivity {
                         newsItem.addPicUrl(image.substring(1));
                     }
                 }
-                Log.i("title", newsItem.getTitle());
-                Log.i("date", newsItem.getDate());
-                Log.i("publisher", newsItem.getPublisher());
                 newsList.add(newsItem);
             }
             return true;
@@ -247,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
                 JSONArray newsArray = news.getJSONArray("data");
                 for (int i = 0; i < newsArray.size(); i++) {
                     JSONObject newsObject = newsArray.getJSONObject(i);
-                    News newsItem = new News(newsObject.getString("title"), new ArrayList<String>(), newsObject.getString("publishTime"), newsObject.getString("publisher"), newsObject.getString("category"), newsObject.getString("content"), newsObject.getString("videoUrl"), newsObject.getString("newsID"));
+                    News newsItem = new News(newsObject.getString("title"), new ArrayList<String>(), newsObject.getString("publishTime"), newsObject.getString("publisher"), newsObject.getString("category"), newsObject.getString("content"), newsObject.getString("video"), newsObject.getString("newsID"));
                     String images = newsObject.getString("image");
                     String[] pics = images.split(",");
                     String image = pics[0];
