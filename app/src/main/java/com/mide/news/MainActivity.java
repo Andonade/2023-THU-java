@@ -1,5 +1,9 @@
 package com.mide.news;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -58,9 +62,19 @@ public class MainActivity extends AppCompatActivity {
 
     private newsAdapter adapter;
 
+    private ActivityResultLauncher launcher;
+
     private int currentPage;
 
     private int totalPage;
+
+    private String category = "";
+
+    private String words = "";
+
+    private String startDate = "";
+
+    private String endDate = getNowDate();
 
     List<News> newsList = new ArrayList<News>();
 
@@ -135,6 +149,34 @@ public class MainActivity extends AppCompatActivity {
         }).start();
 
         actionBarConfiguration();
+
+        launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                Intent data = result.getData();
+                int resultCode = result.getResultCode();
+                if (resultCode == RESULT_OK && data != null) {
+                    category = data.getStringExtra("category").equals("全部") ? "" : data.getStringExtra("category");
+                    words = data.getStringExtra("words");
+                    startDate = data.getStringExtra("startDate");
+                    endDate = data.getStringExtra("endDate").equals("") ? getNowDate() : data.getStringExtra("endDate");
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (getDefaultNews()) {
+                                Message message = Message.obtain();
+                                message.what = MsgType.REFRESH_SUCCESS.ordinal();
+                                handler.sendMessage(message);
+                            } else {
+                                Message message = Message.obtain();
+                                message.what = MsgType.REFRESH_FAILURE.ordinal();
+                                handler.sendMessage(message);
+                            }
+                        }
+                    }).start();
+                }
+            }
+        });
     }
 
     private String getNowDate() {
@@ -150,17 +192,15 @@ public class MainActivity extends AppCompatActivity {
         Url.append("&words=" + words);
         Url.append("&categories=" + categories);
         Url.append("&page=" + page);
-        URL url = null;
         try {
-            url = new URL(Url.toString());
+            return new URL(Url.toString());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return url;
     }
 
     private boolean getDefaultNews() {
-        URL url = getUrl("", "", getNowDate(), "", "", "1");
+        URL url = getUrl("", startDate, endDate, words, category, "1");
         final OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().url(url).build();
         try (Response response = client.newCall(request).execute()) {
@@ -196,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean getMoreNews() {
         if (currentPage < totalPage) {
             currentPage++;
-            URL url = getUrl("", "", getNowDate(), "", "", String.valueOf(currentPage));
+            URL url = getUrl("", startDate, endDate, words, category, String.valueOf(currentPage));
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder().url(url).build();
             Call call = client.newCall(request);
@@ -242,12 +282,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_filter) {
-            //TODO: filter
-            Toast.makeText(this, "filter", Toast.LENGTH_SHORT).show();
+            filterNews();
             return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void filterNews() {
+        launcher.launch(new Intent(MainActivity.this, FilterActivity.class));
     }
 
     public class newsAdapter extends RecyclerView.Adapter<MyViewHolder> {
