@@ -323,6 +323,7 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra("image", news.getPicUrls().isEmpty() ? "" : news.getPicUrls().get(0));
                     intent.putExtra("content", news.getContent());
                     intent.putExtra("video", news.getVideoUrl());
+                    intent.putExtra("newsID", news.getNewsID());
                     startActivity(intent);
                 }
             });

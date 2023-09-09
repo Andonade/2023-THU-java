@@ -10,9 +10,9 @@ public class News {
     private String category;
     private String content;
     private String videoUrl;
-    private String newsId;
+    private String newsID;
 
-    public News(String title, ArrayList<String> picUrls, String date, String publisher, String category, String content, String videoUrl, String newsId) {
+    public News(String title, ArrayList<String> picUrls, String date, String publisher, String category, String content, String videoUrl, String newsID) {
         this.title = title;
         this.picUrls = picUrls;
         this.date = date;
@@ -20,7 +20,7 @@ public class News {
         this.category = category;
         this.content = content;
         this.videoUrl = videoUrl;
-        this.newsId = newsId;
+        this.newsID = newsID;
     }
 
     public String getTitle() {
@@ -49,7 +49,7 @@ public class News {
 
     public String getVideoUrl() { return videoUrl; }
 
-    public String getNewsId() { return newsId; }
+    public String getNewsID() { return newsID; }
 
-    public void setNewsId(String newsId) { this.newsId = newsId; }
+    public void setNewsID(String newsId) { this.newsID = newsId; }
 }
