@@ -1,5 +1,6 @@
 package com.mide.news;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -52,6 +53,8 @@ public class FilterActivity extends AppCompatActivity {
                 filterOK();
             }
         });
+
+        actionBarConfiguration();
     }
 
     private void filterOK() {
@@ -62,5 +65,17 @@ public class FilterActivity extends AppCompatActivity {
         intent.putExtra("category", category_selected);
         setResult(RESULT_OK, intent);
         finish();
+    }
+
+    private void actionBarConfiguration() {
+        ActionBar actionBar = this.getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle("搜索页");
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return super.onSupportNavigateUp();
     }
 }
