@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="actionBarBackground">#66CCFF</color>
     <color name="actionBarUpper">#39C5BB</color>
+    <color name="viewedNews">#787a7a</color>
 </resources>

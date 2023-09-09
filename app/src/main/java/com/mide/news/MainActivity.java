@@ -8,10 +8,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -174,6 +177,15 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                     }).start();
+                } else if (resultCode == RESULT_FIRST_USER && data != null) {
+                    String newsID = data.getStringExtra("newsID");
+                    for (int i = 0; i < newsList.size(); i++) {
+                        News news = newsList.get(i);
+                        if (news.getNewsID() == newsID) {
+                            adapter.notifyItemChanged(i);
+                            break;
+                        }
+                    }
                 }
             }
         });
@@ -313,6 +325,17 @@ public class MainActivity extends AppCompatActivity {
             holder.newsDate.setText(news.getDate());
             holder.newsPublisher.setText(news.getPublisher());
             holder.newsTitle.setText(news.getTitle());
+            SQLiteDatabase readableDatabase = NewsSqliteOpenHelper.getInstance(MainActivity.this).getReadableDatabase();
+            if (readableDatabase.isOpen()) {
+                Cursor cursor = readableDatabase.rawQuery("select * from news where newsID = ?", new String[]{news.getNewsID()});
+                if (cursor.moveToFirst()) {
+                    holder.newsTitle.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.viewedNews));
+                } else {
+                    holder.newsTitle.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.black));
+                }
+                cursor.close();
+                readableDatabase.close();
+            }
             holder.cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -324,7 +347,7 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra("content", news.getContent());
                     intent.putExtra("video", news.getVideoUrl());
                     intent.putExtra("newsID", news.getNewsID());
-                    startActivity(intent);
+                    launcher.launch(intent);
                 }
             });
         }

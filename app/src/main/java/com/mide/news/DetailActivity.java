@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.mide.news.NewsSqliteOpenHelper;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.CursorWindowAllocationException;
 import android.database.sqlite.SQLiteDatabase;
@@ -104,6 +105,9 @@ public class DetailActivity extends AppCompatActivity {
             if (readableDatabase.isOpen()) {
                 readableDatabase.close();
             }
+            Intent intent = new Intent();
+            intent.putExtra("newsID", newsID);
+            setResult(RESULT_FIRST_USER, intent);
             finish();
             return true;
         } else if (item.getItemId() == R.id.action_star) {
