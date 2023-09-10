@@ -18,14 +18,17 @@
         android:theme="@style/AppTheme"
         tools:targetApi="31">
         <activity
+            android:name=".HistoryActivity"
+            android:exported="false" />
+        <activity
             android:name=".FilterActivity"
             android:exported="false"
             android:label="@string/title_activity_filter" />
         <activity
             android:name=".DetailActivity"
-            android:exported="false"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
-            android:screenOrientation="portrait"/>
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".MainActivity"
             android:exported="true">

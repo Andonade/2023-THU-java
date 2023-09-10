@@ -67,17 +67,9 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityResultLauncher launcher;
 
-    private int currentPage;
+    private int currentPage, totalPage;
 
-    private int totalPage;
-
-    private String category = "";
-
-    private String words = "";
-
-    private String startDate = "";
-
-    private String endDate = getNowDate();
+    private String category = "", words = "", startDate = "", endDate = getNowDate();
 
     List<News> newsList = new ArrayList<News>();
 
@@ -291,15 +283,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_filter) {
-            filterNews();
+            launcher.launch(new Intent(MainActivity.this, FilterActivity.class));
+            return true;
+        } else if (item.getItemId() == R.id.action_history) {
+            startActivity(new Intent(MainActivity.this, HistoryActivity.class));
             return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
-    }
-
-    private void filterNews() {
-        launcher.launch(new Intent(MainActivity.this, FilterActivity.class));
     }
 
     public class newsAdapter extends RecyclerView.Adapter<MyViewHolder> {
