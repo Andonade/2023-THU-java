@@ -1,4 +1,4 @@
-package com.mide.news;
+package com.java.chenyitao;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -18,7 +18,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,8 +39,8 @@ import com.alibaba.fastjson2.*;
 
 import okhttp3.*;
 
-import com.mide.news.model.News;
-import com.mide.news.model.MsgType;
+import com.mide.chenyitao.model.News;
+import com.mide.chenyitao.model.MsgType;
 
 import com.bumptech.glide.Glide;
 import com.scwang.smart.refresh.footer.BallPulseFooter;

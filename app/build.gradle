@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace 'com.mide.news'
+    namespace 'com.java.chenyitao'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.mide.news"
+        applicationId "com.java.chenyitao"
         minSdk 28
         targetSdk 33
         versionCode 1

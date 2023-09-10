@@ -1,4 +1,4 @@
-package com.mide.news;
+package com.mide.chenyitao;
 
 import org.junit.Test;
 

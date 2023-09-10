@@ -1,4 +1,4 @@
-package com.mide.news;
+package com.java.chenyitao;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;

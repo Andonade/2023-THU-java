@@ -1,4 +1,4 @@
-package com.mide.news.model;
+package com.mide.chenyitao.model;
 
 import java.util.ArrayList;
 

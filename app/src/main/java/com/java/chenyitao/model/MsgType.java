@@ -1,4 +1,4 @@
-package com.mide.news.model;
+package com.mide.chenyitao.model;
 
 public enum MsgType {
     REFRESH_SUCCESS,

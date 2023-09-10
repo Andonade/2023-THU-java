@@ -1,23 +1,16 @@
-package com.mide.news;
+package com.java.chenyitao;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.mide.news.NewsSqliteOpenHelper;
-
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.CursorWindowAllocationException;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
-import android.widget.MediaController;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
