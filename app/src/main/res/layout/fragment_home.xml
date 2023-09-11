@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.scwang.smart.refresh.layout.SmartRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/refreshLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:srlHeaderMaxDragRate="2"
+    app:srlFooterMaxDragRate="2"
+    app:srlHeaderTriggerRate="1"
+    app:srlFooterTriggerRate="1"
+
+    app:srlHeaderHeight="100dp"
+    app:srlFooterHeight="100dp"
+    app:srlHeaderInsetStart="0dp"
+    app:srlFooterInsetStart="0dp">
+
+    <com.scwang.smart.refresh.header.BezierRadarHeader
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:srlTextPulling="上拉加载更多"
+        app:srlTextLoading="释放立即加载"
+        app:srlTextRelease="正在加载…"
+        app:srlTextFinish="加载完成"
+        app:srlTextFailed="加载失败"
+        app:srlTextSecondary="释放进入二楼"
+        app:srlTextRefreshing="正在刷新"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:overScrollMode="never"/>
+
+    <com.scwang.smart.refresh.footer.BallPulseFooter
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:srlTextPulling="上拉加载更多"
+        app:srlTextRelease="释放立即加载"
+        app:srlTextLoading="正在加载…"
+        app:srlTextRefreshing="正在刷新"
+        app:srlTextFinish="加载完成"
+        app:srlTextFailed="加载失败"
+        app:srlTextNothing="没有更多新闻了"/>
+
+</com.scwang.smart.refresh.layout.SmartRefreshLayout>

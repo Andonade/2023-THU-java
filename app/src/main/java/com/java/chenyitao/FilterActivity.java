@@ -63,7 +63,7 @@ public class FilterActivity extends AppCompatActivity {
         intent.putExtra("startDate", startDateText.getText().toString());
         intent.putExtra("endDate", endDateText.getText().toString());
         intent.putExtra("category", category_selected);
-        setResult(RESULT_OK, intent);
+        setResult(10, intent);
         finish();
     }
 

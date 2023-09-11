@@ -1,4 +1,4 @@
-package com.mide.chenyitao.model;
+package com.java.chenyitao.model;
 
 public enum MsgType {
     REFRESH_SUCCESS,

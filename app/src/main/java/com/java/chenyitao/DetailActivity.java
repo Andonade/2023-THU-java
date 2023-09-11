@@ -100,7 +100,7 @@ public class DetailActivity extends AppCompatActivity {
             }
             Intent intent = new Intent();
             intent.putExtra("newsID", newsID);
-            setResult(RESULT_FIRST_USER, intent);
+            setResult(20, intent);
             finish();
             return true;
         } else if (item.getItemId() == R.id.action_star) {
