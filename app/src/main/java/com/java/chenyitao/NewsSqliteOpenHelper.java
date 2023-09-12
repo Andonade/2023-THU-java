@@ -22,7 +22,7 @@ public class NewsSqliteOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE IF NOT EXISTS news (NewsID VARCHAR PRIMARY KEY, title VARCHAR, date VARCHAR, publisher VARCHAR, content VARCHAR, isStared BOOLEAN)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS news (NewsID VARCHAR PRIMARY KEY, title VARCHAR, date VARCHAR, publisher VARCHAR, content VARCHAR, isStared BOOLEAN, createTime TIMESTAMP, starTime TIMESTAMP)");
     }
 
     @Override

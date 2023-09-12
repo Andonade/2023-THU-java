@@ -139,6 +139,9 @@ public class DetailActivity extends AppCompatActivity {
                 boolean isStared = cursor.getInt(index) == 1;
                 ContentValues values = new ContentValues();
                 values.put("isStared", !isStared);
+                if (!isStared) {
+                    values.put("starTime", System.currentTimeMillis());
+                }
                 readableDatabase.update("news", values, selection, selectionArgs);
                 cursor.close();
                 if (isStared) {
@@ -152,26 +155,6 @@ public class DetailActivity extends AppCompatActivity {
             }
         } else {
             Toast.makeText(this, "数据库打开失败", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private boolean newsExist() {
-        SQLiteDatabase readableDatabase = NewsSqliteOpenHelper.getInstance(this).getReadableDatabase();
-
-        if (readableDatabase.isOpen()) {
-            String selection = "NewsID = ?";
-            String[] selectionArgs = {newsID};
-            Cursor cursor = readableDatabase.rawQuery("SELECT * FROM news WHERE " + selection, selectionArgs);
-            if (cursor.getCount() > 0) {
-                cursor.close();
-                return true;
-            } else {
-                cursor.close();
-                return false;
-            }
-        } else {
-            Toast.makeText(this, "数据库打开失败", Toast.LENGTH_SHORT).show();
-            return false;
         }
     }
 
@@ -201,17 +184,21 @@ public class DetailActivity extends AppCompatActivity {
         SQLiteDatabase readableDatabase = NewsSqliteOpenHelper.getInstance(this).getReadableDatabase();
 
         if (readableDatabase.isOpen()) {
-            if (!newsExist()) {
-                ContentValues values = new ContentValues();
+            String selection = "NewsID = ?";
+            String[] selectionArgs = {newsID};
+            ContentValues values = new ContentValues();
+            values.put("createTime", System.currentTimeMillis());
+            int count = readableDatabase.update("news", values, selection, selectionArgs);
+            if (count == 0) {
                 values.put("NewsID", newsID);
                 values.put("title", title);
                 values.put("date", date);
                 values.put("publisher", publisher);
                 values.put("content", content);
                 values.put("isStared", false);
+                values.put("starTime", System.currentTimeMillis());
                 readableDatabase.insert("news", null, values);
             }
-            readableDatabase.close();
         } else {
             Toast.makeText(this, "数据库打开失败", Toast.LENGTH_SHORT).show();
         }
