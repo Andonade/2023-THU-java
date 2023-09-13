@@ -5,6 +5,10 @@
         android:id="@+id/home"
         android:icon="@drawable/ic_home_black_24dp"/>
     <item
+        android:title="搜索"
+        android:id="@+id/search"
+        android:icon="@android:drawable/ic_menu_search"/>
+    <item
         android:title="记录"
         android:id="@+id/history"
         android:icon="@android:drawable/ic_menu_recent_history"/>

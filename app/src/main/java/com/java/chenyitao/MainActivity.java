@@ -49,12 +49,7 @@ public class MainActivity extends AppCompatActivity {
             public void onActivityResult(ActivityResult result) {
                 Intent data = result.getData();
                 int resultCode = result.getResultCode();
-                if (resultCode == 10 && data != null) {
-                    if (fragmentManager.findFragmentById(R.id.frameLayout) instanceof HomeFragment) {
-                        HomeFragment homeFragment = (HomeFragment) fragmentManager.findFragmentById(R.id.frameLayout);
-                        homeFragment.backFromFilter(data);
-                    }
-                } else if (resultCode == 20 && data != null) {
+                if (resultCode == 20 && data != null) {
                     if (fragmentManager.findFragmentById(R.id.frameLayout) instanceof HomeFragment) {
                         HomeFragment homeFragment = (HomeFragment) fragmentManager.findFragmentById(R.id.frameLayout);
                         String newsID = data.getStringExtra("newsID");
@@ -73,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
         NavigationController navigationController = navigationView.material()
                 .addItem(R.drawable.ic_home_black_24dp, "主页")
+                .addItem(android.R.drawable.ic_menu_search, "搜索")
                 .addItem(android.R.drawable.ic_menu_recent_history, "历史")
                 .build();
 
@@ -85,6 +81,9 @@ public class MainActivity extends AppCompatActivity {
                         fragmentTransaction.replace(R.id.frameLayout, new HomeFragment()).commit();
                     } else if (index == 1) {
                         fragmentTransaction = fragmentManager.beginTransaction();
+                        fragmentTransaction.replace(R.id.frameLayout, new SearchFragment()).commit();
+                    } else if (index == 2) {
+                        fragmentTransaction = fragmentManager.beginTransaction();
                         fragmentTransaction.replace(R.id.frameLayout, new HistoryFragment()).commit();
                     }
                 }
@@ -96,25 +95,6 @@ public class MainActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle("News");
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.menu_home, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_filter) {
-            if (fragmentManager.findFragmentById(R.id.frameLayout) instanceof HomeFragment) {
-                launcher.launch(new Intent(MainActivity.this, FilterActivity.class));
-            }
-            return true;
-        } else {
-            return super.onOptionsItemSelected(item);
         }
     }
 
