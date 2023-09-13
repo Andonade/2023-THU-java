@@ -59,8 +59,8 @@ public class DetailActivity extends AppCompatActivity {
         addNews(title, date, publisher, content);
         if (!video.equals("")) {
             jzvdStd.setVisibility(VideoView.VISIBLE);
-            jzvdStd.setUp(video, "", JzvdStd.SCREEN_NORMAL);
-            jzvdStd.startVideo();
+            jzvdStd.WIFI_TIP_DIALOG_SHOWED = true;
+            jzvdStd.setUp(video, "视频", JzvdStd.SCREEN_NORMAL);
         } else {
             jzvdStd.setVisibility(VideoView.GONE);
         }
