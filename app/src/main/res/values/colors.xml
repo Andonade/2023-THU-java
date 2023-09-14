@@ -7,7 +7,8 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="actionBarBackground">#66CCFF</color>
-    <color name="actionBarUpper">#39C5BB</color>
-    <color name="viewedNews">#787a7a</color>
+    <color name="customBlue">#66CCFF</color>
+    <color name="customGreen">#39C5BB</color>
+    <color name="customGrey">#787a7a</color>
+    <color name="customWhite">#FAFAFA</color>
 </resources>

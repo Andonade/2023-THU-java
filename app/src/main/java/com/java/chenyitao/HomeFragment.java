@@ -305,7 +305,7 @@ public class HomeFragment extends Fragment {
             if (readableDatabase.isOpen()) {
                 Cursor cursor = readableDatabase.rawQuery("select * from news where newsID = ?", new String[]{news.getNewsID()});
                 if (cursor.moveToFirst()) {
-                    holder.newsTitle.setTextColor(ContextCompat.getColor(context, R.color.viewedNews));
+                    holder.newsTitle.setTextColor(ContextCompat.getColor(context, R.color.customGrey));
                 } else {
                     holder.newsTitle.setTextColor(ContextCompat.getColor(context, R.color.black));
                 }

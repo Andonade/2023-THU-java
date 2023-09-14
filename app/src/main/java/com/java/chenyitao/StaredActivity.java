@@ -54,7 +54,7 @@ public class StaredActivity extends AppCompatActivity {
         if (newsList.size() == 0) {
             textView.setVisibility(View.VISIBLE);
             textView.setText("暂无收藏记录");
-            textView.setTextColor(ContextCompat.getColor(this, R.color.viewedNews));
+            textView.setTextColor(ContextCompat.getColor(this, R.color.customGrey));
         } else {
             textView.setVisibility(View.GONE);
         }

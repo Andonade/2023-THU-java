@@ -56,7 +56,7 @@ public class ViewedActivity extends AppCompatActivity {
         if (newsList.size() == 0) {
             textView.setVisibility(View.VISIBLE);
             textView.setText("暂无历史记录");
-            textView.setTextColor(ContextCompat.getColor(this, R.color.viewedNews));
+            textView.setTextColor(ContextCompat.getColor(this, R.color.customGrey));
         } else {
             textView.setVisibility(View.GONE);
         }

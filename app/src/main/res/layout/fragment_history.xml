@@ -13,8 +13,7 @@
         android:layout_width="225dp"
         android:layout_height="225dp"
         android:gravity="center"
-        app:cardBackgroundColor="@color/actionBarBackground"
-        app:cardElevation="10dp"
+        app:cardBackgroundColor="@color/customBlue"
         app:cardCornerRadius="40dp">
         <TextView
             android:layout_width="wrap_content"
@@ -32,7 +31,7 @@
         android:layout_height="225dp"
         android:gravity="center"
         android:layout_marginTop="15dp"
-        app:cardBackgroundColor="@color/actionBarBackground"
+        app:cardBackgroundColor="@color/customBlue"
         app:cardElevation="10dp"
         app:cardCornerRadius="40dp">
         <TextView
