@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -266,10 +267,14 @@ public class HomeFragment extends Fragment {
 
     private void tabLayoutConfiguration() {
         tabEntities = new ArrayList<>();
-        for (int i = 0; i <categoryExist.length; i++) {
+        for (int i = 0; i < categoryExist.length; i++) {
             if (categoryExist[i]) {
                 tabEntities.add(new MyCustomEntity(categories[i], 0, 0));
             }
+        }
+        if (tabEntities.isEmpty()) {
+            Toast.makeText(context, "不可以去除所有分类", Toast.LENGTH_SHORT).show();
+            return;
         }
         tabLayout.setTabData(tabEntities);
         tabLayout.setOnTabSelectListener(new com.flyco.tablayout.listener.OnTabSelectListener() {
@@ -335,13 +340,17 @@ public class HomeFragment extends Fragment {
 
     private void tabChange() {
         int[] selectedIndexes = bottomMenu.getSelectionIndexArray();
-        for (int i = 0; i < categoryExist.length; i++) {
-            categoryExist[i] = false;
+        if (selectedIndexes == null) {
+            return;
+        } else {
+            for (int i = 0; i < categoryExist.length; i++) {
+                categoryExist[i] = false;
+            }
+            for (int i = 0; i < selectedIndexes.length; i++) {
+                categoryExist[selectedIndexes[i]] = true;
+            }
+            tabLayoutConfiguration();
         }
-        for (int i = 0; i < selectedIndexes.length; i++) {
-            categoryExist[selectedIndexes[i]] = true;
-        }
-        tabLayoutConfiguration();
     }
 
     public void backFromDetail(String newsID) {
