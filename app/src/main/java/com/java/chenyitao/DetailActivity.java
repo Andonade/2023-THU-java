@@ -17,6 +17,7 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.bumptech.glide.Glide;
+import com.java.chenyitao.model.NewsSqliteOpenHelper;
 
 import cn.jzvd.JzvdStd;
 

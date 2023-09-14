@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.java.chenyitao.model.News;
+import com.java.chenyitao.model.NewsSqliteOpenHelper;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package com.java.chenyitao;
+package com.java.chenyitao.model;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

@@ -1,4 +1,4 @@
-package com.java.chenyitao;
+package com.java.chenyitao.model;
 
 import com.flyco.tablayout.listener.CustomTabEntity;
 
