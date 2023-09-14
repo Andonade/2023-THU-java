@@ -98,6 +98,24 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_setting, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_setting) {
+            if (fragmentManager.findFragmentById(R.id.frameLayout) instanceof HomeFragment) {
+                HomeFragment homeFragment = (HomeFragment) fragmentManager.findFragmentById(R.id.frameLayout);
+                homeFragment.categoryDialog();
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     public void go2Detail(News news) {
         Intent intent = new Intent(MainActivity.this, DetailActivity.class);
         intent.putExtra("title", news.getTitle());

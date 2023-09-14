@@ -35,8 +35,16 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.bumptech.glide.Glide;
+import com.flyco.tablayout.CommonTabLayout;
+import com.flyco.tablayout.listener.CustomTabEntity;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.java.chenyitao.model.MsgType;
 import com.java.chenyitao.model.News;
+import com.kongzue.dialogx.dialogs.BottomDialog;
+import com.kongzue.dialogx.dialogs.BottomMenu;
+import com.kongzue.dialogx.interfaces.BaseDialog;
+import com.kongzue.dialogx.interfaces.OnDialogButtonClickListener;
+import com.kongzue.dialogx.interfaces.OnMenuItemSelectListener;
 import com.scwang.smart.refresh.footer.BallPulseFooter;
 import com.scwang.smart.refresh.header.BezierRadarHeader;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
@@ -60,6 +68,9 @@ import okhttp3.Response;
 public class HomeFragment extends Fragment {
 
     private Context context;
+
+    private CommonTabLayout tabLayout;
+
     private RefreshLayout refreshLayout;
 
     private BezierRadarHeader header;
@@ -68,11 +79,19 @@ public class HomeFragment extends Fragment {
 
     private RecyclerView recyclerView;
 
+    private BottomMenu bottomMenu;
+
     private HomeFragment.MyHandler handler;
 
     private HomeFragment.newsAdapter adapter;
 
+    ArrayList<CustomTabEntity> tabEntities;
+
     private int currentPage, totalPage;
+
+    private String[] categories = {"全部", "娱乐", "军事", "教育", "文化", "健康", "财经", "体育", "汽车", "科技", "社会"};
+
+    private boolean[] categoryExist = new boolean[11];
 
     private String category = "", words = "", startDate = "", endDate = getNowDate();
 
@@ -86,12 +105,18 @@ public class HomeFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
          context = getActivity().getApplicationContext();
          handler = new HomeFragment.MyHandler(this);
-        super.onCreate(savedInstanceState);
+         super.onCreate(savedInstanceState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+
+        for (int i = 0; i < categoryExist.length; i++) {
+            categoryExist[i] = true;
+        }
+
+        tabLayout = view.findViewById(R.id.tabLayout);
 
         refreshLayout = view.findViewById(R.id.refreshLayout);
         header = (BezierRadarHeader) view.findViewById(R.id.header);
@@ -157,6 +182,8 @@ public class HomeFragment extends Fragment {
                 }
             }
         }).start();
+
+        tabLayoutConfiguration();
 
         return view;
     }
@@ -247,25 +274,84 @@ public class HomeFragment extends Fragment {
         return false;
     }
 
-    public void backFromFilter(Intent data) {
-        category = data.getStringExtra("category").equals("全部") ? "" : data.getStringExtra("category");
-        words = data.getStringExtra("words");
-        startDate = data.getStringExtra("startDate");
-        endDate = data.getStringExtra("endDate").equals("") ? getNowDate() : data.getStringExtra("endDate");
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (getDefaultNews()) {
-                    Message message = Message.obtain();
-                    message.what = MsgType.REFRESH_SUCCESS.ordinal();
-                    handler.sendMessage(message);
-                } else {
-                    Message message = Message.obtain();
-                    message.what = MsgType.REFRESH_FAILURE.ordinal();
-                    handler.sendMessage(message);
-                }
+    private void tabLayoutConfiguration() {
+        tabEntities = new ArrayList<>();
+        for (int i = 0; i <categoryExist.length; i++) {
+            if (categoryExist[i]) {
+                tabEntities.add(new MyCustomEntity(categories[i], 0, 0));
             }
-        }).start();
+        }
+        tabLayout.setTabData(tabEntities);
+        tabLayout.setOnTabSelectListener(new com.flyco.tablayout.listener.OnTabSelectListener() {
+            @Override
+            public void onTabSelect(int position) {
+                category = categories[position].equals("全部") ? "" : categories[position];
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (getDefaultNews()) {
+                            Message message = Message.obtain();
+                            message.what = MsgType.LOAD_SUCCESS.ordinal();
+                            handler.sendMessage(message);
+                        } else {
+                            Message message = Message.obtain();
+                            message.what = MsgType.INIT_FAILURE.ordinal();
+                            handler.sendMessage(message);
+                        }
+                    }
+                }).start();
+            }
+
+            @Override
+            public void onTabReselect(int position){}
+        });
+    }
+
+    public void categoryDialog() {
+        int selectedCount = 0;
+        for (int i = 0; i < categoryExist.length; i++) {
+            if (categoryExist[i]) {
+                selectedCount++;
+            }
+        }
+        int[] selectedIndexes = new int[selectedCount];
+        int index = 0;
+        for (int i = 0; i < categoryExist.length; i++) {
+            if (categoryExist[i]) {
+                selectedIndexes[index++] = i;
+            }
+        }
+        bottomMenu = BottomMenu.show(categories)
+                .setMessage("请选择要显示的分类")
+                .setOkButton("确定", new OnDialogButtonClickListener() {
+                    @Override
+                    public boolean onClick(BaseDialog dialog, View v) {
+                        tabChange();
+                        return false;
+                    }
+                })
+                .setCancelButton("取消", new OnDialogButtonClickListener() {
+                    @Override
+                    public boolean onClick(BaseDialog dialog, View v) {
+                        return false;
+                    }
+                })
+                .setOnMenuItemClickListener(new OnMenuItemSelectListener<BottomMenu>() {
+                    @Override
+                    public void onMultiItemSelect(BottomMenu dialog, CharSequence[] text, int[] index) {}
+                })
+                .setSelection(selectedIndexes);
+    }
+
+    private void tabChange() {
+        int[] selectedIndexes = bottomMenu.getSelectionIndexArray();
+        for (int i = 0; i < categoryExist.length; i++) {
+            categoryExist[i] = false;
+        }
+        for (int i = 0; i < selectedIndexes.length; i++) {
+            categoryExist[selectedIndexes[i]] = true;
+        }
+        tabLayoutConfiguration();
     }
 
     public void backFromDetail(String newsID) {

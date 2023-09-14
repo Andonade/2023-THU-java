@@ -7,10 +7,16 @@
     android:orientation="vertical">
 
     <com.flyco.tablayout.CommonTabLayout
+        android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:elevation="10dp"
-        app:tl_indicator_color="@color/customBlue"/>
+        app:tl_indicator_color="@color/customBlue"
+        app:tl_underline_color="@color/customBlue"
+        app:tl_textSelectColor="@color/customBlue"
+        app:tl_textUnselectColor="@color/customGrey"
+        app:tl_underline_gravity="BOTTOM"
+        app:tl_indicator_anim_enable="true" />
     <com.scwang.smart.refresh.layout.SmartRefreshLayout
         android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
@@ -56,4 +62,5 @@
             app:srlTextNothing="没有更多新闻了"/>
 
     </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+
 </LinearLayout>
