@@ -7,3 +7,5 @@
 <a target="_blank" href="https://icons8.com/icon/104/star">Outlined star</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
 
 <a target="_blank" href="https://icons8.com/icon/7856/star">Filled star</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+
+For Detail, go to [report.pdf](./report.pdf)
