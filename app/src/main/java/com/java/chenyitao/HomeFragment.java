@@ -280,6 +280,20 @@ public class HomeFragment extends Fragment {
         tabLayout.setOnTabSelectListener(new com.flyco.tablayout.listener.OnTabSelectListener() {
             @Override
             public void onTabSelect(int position) {
+                int temp = 0;
+                int index = 0;
+                while (index < categoryExist.length) {
+                    if (categoryExist[index]) {
+                        if (temp == position) {
+                            category = categories[index];
+                            break;
+                        } else {
+                            index++;
+                            temp++;
+                        }
+                    }
+                    index++;
+                }
                 category = categories[position].equals("全部") ? "" : categories[position];
                 new Thread(new Runnable() {
                     @Override
